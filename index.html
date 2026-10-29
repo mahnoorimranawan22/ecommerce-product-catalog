@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopVault — E-Commerce Product Catalog</title>
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon.png" />
+  <meta name="theme-color" content="#f97316" />
+  <meta name="description"
+    content="Browse, search, filter, and sort thousands of products. Add to cart with one click and shop securely at ShopVault." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════
+       HEADER
+  ══════════════════════════════════ -->
+  <header class="header" role="banner">
+    <div class="header__logo" aria-label="ShopVault home">
+      <div class="header__logo-icon" aria-hidden="true">🛍️</div>
+      <span class="header__logo-text">ShopVault</span>
+    </div>
+
+    <div class="header__actions">
+      <!-- Theme Toggle -->
+      <button class="icon-btn" id="theme-btn" aria-label="Toggle dark/light mode" title="Toggle theme">
+        ☀️
+      </button>
+
+      <!-- Cart Button -->
+      <button class="icon-btn" id="cart-btn" aria-label="Open cart" title="Cart">
+        🛒
+        <span class="cart-badge hidden" id="cart-badge" aria-live="polite">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════
+       ERROR BANNER
+  ══════════════════════════════════ -->
+  <div class="error-banner" id="error-banner" role="alert" aria-live="assertive"></div>
+
+  <!-- ══════════════════════════════════
+       CONTROLS (Search / Filter / Sort)
+  ══════════════════════════════════ -->
+  <section class="controls" aria-label="Product filters">
+    <!-- Search -->
+    <div class="search-wrap">
+      <span class="search-icon" aria-hidden="true">🔍</span>
+      <input class="search-input" id="search-input" type="search" placeholder="Search products..."
+        aria-label="Search products by title" autocomplete="off" />
+    </div>
+
+    <!-- Category Filter -->
+    <select class="select-control" id="category-select" aria-label="Filter by category">
+      <option value="">All Categories</option>
+    </select>
+
+    <!-- Sort -->
+    <select class="select-control" id="sort-select" aria-label="Sort products">
+      <option value="">Sort: Default</option>
+      <option value="price-asc">Price: Low → High</option>
+      <option value="price-desc">Price: High → Low</option>
+      <option value="rating">Rating: Best First</option>
+    </select>
+
+    <span class="results-count" id="results-count" aria-live="polite"></span>
+  </section>
+
+  <!-- ══════════════════════════════════
+       PRODUCT GRID
+  ══════════════════════════════════ -->
+  <main class="main" id="main-content" role="main">
+    <div class="product-grid" id="product-grid" aria-label="Product listing" aria-live="polite">
+      <!-- Products rendered by JS -->
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════
+       PRODUCT DETAIL MODAL
+  ══════════════════════════════════ -->
+  <div class="overlay" id="product-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <button class="modal__close" id="modal-close" aria-label="Close product detail">✕</button>
+      <div class="modal__inner">
+        <!-- Image -->
+        <div class="modal__img-wrap">
+          <img class="modal__img" id="modal-img" src="" alt="" />
+        </div>
+        <!-- Info -->
+        <div class="modal__info">
+          <span class="modal__category" id="modal-category"></span>
+          <h1 class="modal__title" id="modal-title"></h1>
+          <p class="modal__desc" id="modal-desc"></p>
+          <div class="modal__meta">
+            <span class="modal__price" id="modal-price"></span>
+            <div class="modal__rating">
+              <div class="stars" id="modal-rating" aria-label="Star rating"></div>
+              <span class="rating-count" id="modal-rating-count"></span>
+            </div>
+          </div>
+          <div class="modal__actions">
+            <button class="btn-primary" id="modal-add-cart" aria-label="Add to cart">
+              🛒 Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       CART DRAWER
+  ══════════════════════════════════ -->
+  <!-- Cart background overlay (click to close) -->
+  <div class="cart-overlay" id="cart-overlay" aria-hidden="true"></div>
+
+  <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart">
+    <!-- Header -->
+    <div class="cart-drawer__header">
+      <div class="cart-drawer__title">
+        🛒 Cart
+        <span class="cart-drawer__count" id="cart-count">0 items</span>
+      </div>
+      <button class="icon-btn" id="cart-close-btn" aria-label="Close cart">✕</button>
+    </div>
+
+    <!-- Items -->
+    <div class="cart-drawer__items" id="cart-items" aria-live="polite">
+      <!-- Cart items rendered by JS -->
+    </div>
+
+    <!-- Footer -->
+    <div class="cart-drawer__footer">
+      <div class="cart-total-row">
+        <span class="cart-total-label">Total</span>
+        <span class="cart-total-value" id="cart-total">$0.00</span>
+      </div>
+      <div class="cart-footer-btns">
+        <button class="btn-outline" id="clear-cart-btn" aria-label="Clear all cart items">
+          🗑 Clear
+        </button>
+        <button class="btn-checkout" aria-label="Proceed to checkout">
+          ✨ Checkout
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════
+       TOAST NOTIFICATIONS
+  ══════════════════════════════════ -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- ══════════════════════════════════
+       FOOTER
+  ══════════════════════════════════ -->
+  <footer class="footer" role="contentinfo">
+    <p>Powered by <a href="https://fakestoreapi.com" target="_blank" rel="noopener">Fake Store API</a> · Built with ❤️
+      by ShopVault</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
